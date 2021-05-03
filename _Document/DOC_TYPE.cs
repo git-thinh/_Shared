@@ -1,0 +1,19 @@
+﻿public enum DOC_TYPE
+{
+    INFO_OGRINAL = 10,
+    INFO_PROTOBUF = 19,
+
+    PDF_OGRINAL = 30,
+    PDF_COMPRESS = 31,
+
+    IMG_OGRINAL = 50,
+    IMG_OGRINAL_SIZE = 51,
+    IMG_NO_BORDER_PAGE = 60,
+    IMG_LINES = 61,
+
+    TEXT_OGRINAL = 80,
+    TEXT_COMPRESS = 81,
+
+    HTML_OGRINAL = 90,
+    HTML_COMPRESS = 91,
+}
