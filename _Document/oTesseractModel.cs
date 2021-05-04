@@ -42,6 +42,7 @@ public class oTesseractRequest
 
     public int output_count { get; set; }
     public bool output_image { get; set; }
+    public string output_format { get; set; }
     public string output_text { get; set; }
 
     public oTesseractRequest(TESSERACT_COMMAND command_, bool outputImage = false)
@@ -59,34 +60,5 @@ public class oTesseractRequest
         get {
             return string.Format("{0}_{1}|{2}_{3}|{4}", redis_key, redis_field, (int)command, (int)mode, time_created);
         }
-    }
-}
-
-public class oTesseractBox
-{
-    public int x { get; set; }
-    public int y { get; set; }
-    public int width { get; set; }
-    public int height { get; set; }
-    public int right { get; }
-    public int top { get; }
-    public int left { get; }
-    public int bottom { get; }
-
-    public override string ToString()
-    {
-        return string.Format("{0}_{1}_{2}_{3}", x, y, width, height);
-    }
-
-    public oTesseractBox(System.Drawing.Rectangle r)
-    {
-        x = r.X;
-        y = r.Y;
-        width = r.Width;
-        height = r.Height;
-        right = r.Right;
-        top = r.Top;
-        left = r.Left;
-        bottom = r.Bottom;
     }
 }

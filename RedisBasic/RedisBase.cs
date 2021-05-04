@@ -120,6 +120,30 @@ public class RedisBase : IDisposable
         return false;
     }
 
+    public bool PSUBSCRIBE(string channel)
+    {
+        if (string.IsNullOrEmpty(channel)) return false;
+        if (channel != __MONITOR_CHANNEL)
+            channel = "<{" + channel + "}>";
+
+        try
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("*2\r\n");
+            sb.Append("$10\r\nPSUBSCRIBE\r\n");
+            sb.AppendFormat("${0}\r\n{1}\r\n", channel.Length, channel);
+
+            byte[] buf = Encoding.UTF8.GetBytes(sb.ToString());
+            var ok = SendBuffer(buf);
+            var lines = ReadMultiString();
+            //Console.WriteLine("\r\n\r\n{0}\r\n\r\n", string.Join(Environment.NewLine, lines));
+            return ok;
+        }
+        catch (Exception ex)
+        {
+        }
+        return false;
+    }
 
     internal bool PUBLISH(string channel, byte[] vals)
     {
