@@ -233,7 +233,19 @@ public class RedisBase : IDisposable
         throw new ResponseException("Unexpected reply: " + s);
     }
 
+    public string[] KEYS(string pattern = "*")
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append("*2\r\n");
+        sb.Append("$4\r\nKEYS\r\n");
+        sb.AppendFormat("${0}\r\n{1}\r\n", pattern.Length, pattern);
+        byte[] buf = Encoding.UTF8.GetBytes(sb.ToString());
 
+        bool ok = SendBuffer(buf);
+        var keys = ReadMultiString();
+
+        return keys;
+    }
 
 
     public bool HSET(long key, int field, byte[] value)
