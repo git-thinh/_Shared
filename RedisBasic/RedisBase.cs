@@ -238,7 +238,8 @@ public class RedisBase : IDisposable
 
     public bool HSET(long key, int field, byte[] value)
         => HMSET(key.ToString(), new Dictionary<string, byte[]>() { { field.ToString(), value } });
-
+    public bool HSET(string key, string field, byte[] value)
+        => HMSET(key.ToString(), new Dictionary<string, byte[]>() { { field.ToString(), value } });
     public bool HSET(string key, string field, string value)
         => HMSET(key.ToString(), new Dictionary<string, string>() { { field.ToString(), value.ToString() } });
 
