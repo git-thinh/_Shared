@@ -1,10 +1,25 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+
+namespace System.Runtime.CompilerServices
+{
+    public class ExtensionAttribute : Attribute { }
+}
+
 namespace System
 {
+	    public interface IStructuralComparable {
+        Int32 CompareTo(Object other, IComparer comparer);
+    }
+	
+	    public interface IStructuralEquatable {
+        Boolean Equals(Object other, IEqualityComparer comparer);
+        int GetHashCode(IEqualityComparer comparer);
+    }
+
     /// <summary>
     /// Helper so we can call some tuple methods recursively without knowing the underlying types.
     /// </summary>

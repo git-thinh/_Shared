@@ -7,12 +7,16 @@ using System.Text;
 
 public class RedisBase : IDisposable
 {
+    #region [ Ctor ]
+
     const string MESSAGE_SPLIT_END = "}>\r\n$";
     const string MESSAGE_SPLIT_BEGIN = "\r\n<{";
     const int BUFFER_HEADER_MAX_SIZE = 1000;
-    public byte[] __getBodyPublish(string channel, byte[] buf)
+    public Tuple<string,byte[]> __getBodyPublish(byte[] buf, string channel = null)
     {
         if (string.IsNullOrEmpty(channel) || buf == null || buf.Length == 0) return null;
+
+        var val = new Tuple<string, byte[]>(string.Empty, null);
 
         int len = 0;
         int pos = 0;
@@ -36,11 +40,15 @@ public class RedisBase : IDisposable
 
                 a = a[a.Length - 2].Split(new string[] { MESSAGE_SPLIT_BEGIN }, StringSplitOptions.None);
                 string _channel = a[a.Length - 1].Trim();
-                if (_channel == channel)
-                    return bs;
+
+                if (string.IsNullOrEmpty(channel)
+                    || (!string.IsNullOrEmpty(channel) && channel == _channel))
+                {
+                    val = new Tuple<string, byte[]>(_channel, bs);
+                }
             }
         }
-        return null;
+        return val;
     }
 
 
@@ -120,6 +128,8 @@ public class RedisBase : IDisposable
         return false;
     }
 
+    #endregion
+
     #region [ PUBLISH - SUBCRIBE ]
 
     public bool PSUBSCRIBE(string channel)
@@ -184,11 +194,12 @@ public class RedisBase : IDisposable
     internal bool PUBLISH(string channel, string value)
         => PUBLISH(channel, Encoding.UTF8.GetBytes(value));
 
-    internal bool SendBuffer(byte[] buf)
+    #endregion
+
+    bool SendBuffer(byte[] buf)
     {
         if (socket == null) Connect();
         if (socket == null) return false;
-
         try { socket.Send(buf); }
         catch (SocketException ex)
         {
@@ -199,8 +210,6 @@ public class RedisBase : IDisposable
         }
         return true;
     }
-
-    #endregion
 
     #region [ READ ]
 
@@ -522,6 +531,21 @@ public class RedisBase : IDisposable
         {
         }
         return false;
+    }
+
+    #endregion
+
+    #region [ SEND TO COMMAND ]
+
+    public string SendToCommand(string channel, DOC_CMD cmd, string data)
+    {
+        string sendId = Guid.NewGuid().ToString();
+        var ls = new List<byte>();
+        ls.AddRange(Encoding.ASCII.GetBytes(sendId));
+        ls.Add((byte)cmd);
+        ls.AddRange(Encoding.UTF8.GetBytes(data));
+        bool ok = PUBLISH(channel, ls.ToArray());
+        return sendId;
     }
 
     #endregion
