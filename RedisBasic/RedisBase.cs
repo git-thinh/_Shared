@@ -12,9 +12,9 @@ public class RedisBase : IDisposable
     const string MESSAGE_SPLIT_END = "}>\r\n$";
     const string MESSAGE_SPLIT_BEGIN = "\r\n<{";
     const int BUFFER_HEADER_MAX_SIZE = 1000;
-    public Tuple<string,byte[]> __getBodyPublish(byte[] buf, string channel = null)
+    public Tuple<string, byte[]> __getBodyPublish(byte[] buf, string channel = null)
     {
-        if (string.IsNullOrEmpty(channel) || buf == null || buf.Length == 0) return null;
+        if (buf == null || buf.Length == 0) return null;
 
         var val = new Tuple<string, byte[]>(string.Empty, null);
 
@@ -42,10 +42,9 @@ public class RedisBase : IDisposable
                 string _channel = a[a.Length - 1].Trim();
 
                 if (string.IsNullOrEmpty(channel)
+                    || _channel == "*"
                     || (!string.IsNullOrEmpty(channel) && channel == _channel))
-                {
                     val = new Tuple<string, byte[]>(_channel, bs);
-                }
             }
         }
         return val;
@@ -183,6 +182,7 @@ public class RedisBase : IDisposable
             var ok = SendBuffer(arr);
             var line = ReadLine();
             //Console.WriteLine("->" + line);
+
             return ok;
         }
         catch (Exception ex)
@@ -552,14 +552,17 @@ public class RedisBase : IDisposable
 
     #region [ REPLY DOCUMENT STATUS ]
 
-    public bool ReplyStatus(string channel, string requestId, string cmd, int ok = 1, long docId = 0, int page = 0, string file = "", string err = "")
-        => PUBLISH(channel, _replyStatus(requestId, cmd, ok, docId, page, file, err));
+    public bool ReplyRequest(string requestId, string cmd, int ok = 1, long docId = 0, int page = 0, string tag = "", string file = "", string err = "")
+        => PUBLISH("*", _replyRequest(requestId, cmd, tag, ok, docId, page, file, err));
+    public bool ReplyRequest(string requestId, string cmd, int ok, long docId, string tag, string err)
+        => PUBLISH("*", _replyRequest(requestId, cmd, tag, ok, docId, 0, string.Empty, err));
+    public bool ReplyRequest(string requestId, string cmd, int ok, long docId, string tag)
+        => PUBLISH("*", _replyRequest(requestId, cmd, tag, ok, docId, 0, string.Empty, string.Empty));
+    public bool ReplyRequest(string requestId, string cmd, int ok, long docId)
+        => PUBLISH("*", _replyRequest(requestId, cmd, string.Empty, ok, docId, 0, string.Empty, string.Empty));
 
-    public bool ReplyStatus(string channel, string requestId, string cmd, int ok, long docId, string err)
-        => PUBLISH(channel, _replyStatus(requestId, cmd, ok, docId, 0, string.Empty, err));
-
-    string _replyStatus(string requestId, string cmd, int ok = 1, long docId = 0, int page = 0, string file = "", string err = "")
-        => string.Format("{0}^{1}^{2}^{3}^{4}^{5}^{6}", requestId, cmd, ok, docId, page, file, err);
+    string _replyRequest(string requestId, string cmd, string tag, int ok = 1, long docId = 0, int page = 0, string file = "", string err = "")
+        => string.Format("{0}^{1}^{2}^{3}^{4}^{5}^{6}^{7}", requestId, cmd, tag, ok, docId, page, file, err);
 
     #endregion
 
