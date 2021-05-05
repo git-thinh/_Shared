@@ -26,7 +26,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace core2.MMF
+namespace System.MMF
 {
 
     /// <summary>

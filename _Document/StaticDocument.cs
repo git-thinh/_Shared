@@ -22,3 +22,27 @@ public static class StaticDocument
     }
 }
 
+public class oDocumentStatus
+{
+    public string request_id { get; }
+    public string cmd { get; }
+    public int ok { get; }
+    public long doc_id { get; }
+    public int page { get; }
+    public string file { get; }
+    public string error { get; }
+
+    public oDocumentStatus(string replyMessage) {
+        var a = replyMessage.Split('^');
+        if (a.Length == 7)
+        {
+            this.request_id = a[0];
+            this.cmd = a[1];
+            this.ok = int.Parse(a[2]);
+            this.doc_id = long.Parse(a[3]);
+            this.page = int.Parse(a[4]);
+            this.file = a[5];
+            this.error = a[6];
+        }
+    }
+}

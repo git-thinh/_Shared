@@ -120,6 +120,8 @@ public class RedisBase : IDisposable
         return false;
     }
 
+    #region [ PUBLISH - SUBCRIBE ]
+
     public bool PSUBSCRIBE(string channel)
     {
         if (string.IsNullOrEmpty(channel)) return false;
@@ -145,6 +147,8 @@ public class RedisBase : IDisposable
         return false;
     }
 
+    internal bool PUBLISH(string channel, long value)
+        => PUBLISH(channel, value.ToString());
     internal bool PUBLISH(string channel, byte[] vals)
     {
         if (!this._connected) return false;
@@ -195,6 +199,10 @@ public class RedisBase : IDisposable
         }
         return true;
     }
+
+    #endregion
+
+    #region [ READ ]
 
     internal string ReadLine()
     {
@@ -297,6 +305,8 @@ public class RedisBase : IDisposable
 
         throw new ResponseException("Unexpected reply: " + s);
     }
+
+    #endregion
 
     #region [ GET ]
 
@@ -513,6 +523,19 @@ public class RedisBase : IDisposable
         }
         return false;
     }
+
+    #endregion
+
+    #region [ REPLY DOCUMENT STATUS ]
+
+    public bool ReplyStatus(string channel, string requestId, string cmd, int ok = 1, long docId = 0, int page = 0, string file = "", string err = "")
+        => PUBLISH(channel, _replyStatus(requestId, cmd, ok, docId, page, file, err));
+
+    public bool ReplyStatus(string channel, string requestId, string cmd, int ok, long docId, string err)
+        => PUBLISH(channel, _replyStatus(requestId, cmd, ok, docId, 0, string.Empty, err));
+
+    string _replyStatus(string requestId, string cmd, int ok = 1, long docId = 0, int page = 0, string file = "", string err = "")
+        => string.Format("{0}^{1}^{2}^{3}^{4}^{5}^{6}", requestId, cmd, ok, docId, page, file, err);
 
     #endregion
 

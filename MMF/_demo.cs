@@ -6,13 +6,12 @@
 //    Tomas Restrepo (tomasr@mvps.org)
 //
 
-using core2.MMF;
 using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
 
-namespace Winterdom.IO.FileMap.Tests
+namespace System.MMF
 {
     public class FileMapTests
     {
