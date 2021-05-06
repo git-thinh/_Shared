@@ -1,12 +1,14 @@
 ﻿using System.IO;
 
-public enum DOC_CMD
+public enum COMMANDS
 {
     DOC_INFO = 0,
 
     PDF_SPLIT_ALL_PDF = 11,
     PDF_SPLIT_ALL_PNG = 12,
     PDF_SPLIT_ALL_JPG = 13,
+
+    TRANSLATE_TEXT_GOOGLE_01 = 80
 }
 
 public enum DOC_TYPE
@@ -44,6 +46,9 @@ public class oDocumentReply
     public int page { get; set; }
     public string file { get; set; }
     public string error { get; set; }
+
+    public string input { get; set; }
+    public string output { get; set; }
 }
 
 public class oDocument
@@ -81,7 +86,7 @@ public static class StaticDocument
         {
             string replyMessage = System.Text.Encoding.UTF8.GetString(buf);
             var a = replyMessage.Split('^');
-            if (a.Length == 8)
+            if (a.Length == 10)
             {
                 var o = new oDocumentReply();
                 o.request_id = a[0];
@@ -92,6 +97,9 @@ public static class StaticDocument
                 o.page = int.Parse(a[5]);
                 o.file = a[6];
                 o.error = a[7];
+
+                o.input = a[8];
+                o.output = a[9];
                 return o;
             }
         }

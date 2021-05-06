@@ -537,7 +537,7 @@ public class RedisBase : IDisposable
 
     #region [ SEND TO COMMAND ]
 
-    public string SendToCommand(string channel, DOC_CMD cmd, string data)
+    public string SendToCommand(string channel, COMMANDS cmd, string data)
     {
         string sendId = Guid.NewGuid().ToString();
         var ls = new List<byte>();
@@ -561,8 +561,11 @@ public class RedisBase : IDisposable
     public bool ReplyRequest(string requestId, string cmd, int ok, long docId)
         => PUBLISH("*", _replyRequest(requestId, cmd, string.Empty, ok, docId, 0, string.Empty, string.Empty));
 
-    string _replyRequest(string requestId, string cmd, string tag, int ok = 1, long docId = 0, int page = 0, string file = "", string err = "")
-        => string.Format("{0}^{1}^{2}^{3}^{4}^{5}^{6}^{7}", requestId, cmd, tag, ok, docId, page, file, err);
+    public bool ReplyRequest(string requestId, string cmd, int ok, string tag, string input, string output)
+        => PUBLISH("*", _replyRequest(requestId, cmd, tag, ok, 0, 0, string.Empty, string.Empty, input, output));
+
+    string _replyRequest(string requestId, string cmd, string tag, int ok = 1, long docId = 0, int page = 0, string file = "", string err = "",string input = "", string output = "")
+        => string.Format("{0}^{1}^{2}^{3}^{4}^{5}^{6}^{7}^{8}^{9}", requestId, cmd, tag, ok, docId, page, file, err);
 
     #endregion
 
