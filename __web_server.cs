@@ -3,13 +3,14 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Threading;
+using System.Linq;
 
 namespace System.Web
 {
     public class WebServer : HttpServer
     {
-        readonly Action<Tuple<string, string, string>> __action;
-        public WebServer(Action<Tuple<string, string, string>> action) => __action = action;
+        readonly Action<Tuple<string, COMMANDS, string>> __action;
+        public WebServer(Action<Tuple<string, COMMANDS, string>> action) => __action = action;
 
         protected override void ProcessRequest(HttpListenerContext Context)
         {
@@ -50,9 +51,18 @@ namespace System.Web
                             return;
                         default:
                             if (!string.IsNullOrEmpty(command) && !string.IsNullOrEmpty(input))
-                                new Thread(new ParameterizedThreadStart((o) =>
-                                __action((Tuple<string, string, string>)o)))
-                                    .Start(new Tuple<string, string, string>(string.Empty, command, input));
+                            {
+                                command = command.ToUpper();
+                                var ls = Enum.GetValues(typeof(COMMANDS)).Cast<COMMANDS>()
+                                    .Select(v => new Tuple<string, COMMANDS>(v.ToString().ToUpper(), v)).ToList();
+                                var c = ls.Where(x => x.Item1 == command).Take(1).SingleOrDefault();
+                                if (c != null)
+                                {
+                                    new Thread(new ParameterizedThreadStart((o) =>
+                                    __action((Tuple<string, COMMANDS, string>)o)))
+                                        .Start(new Tuple<string, COMMANDS, string>(string.Empty, c.Item2, input));
+                                }
+                            }
                             break;
                     }
 

@@ -40,6 +40,17 @@
         settingByType();
     }
 
+    public RedisSetting(REDIS_TYPE type, int port = 6379, int db = 0)
+    {
+        this.Type = type;
+        this.Host = "localhost";
+        this.Port = port;
+        this.Db = db;
+        this.Password = string.Empty;
+
+        settingByType();
+    }
+
     void settingByType()
     {
         switch (this.Type)

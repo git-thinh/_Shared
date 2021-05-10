@@ -5,7 +5,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 
-public class RedisBase : IDisposable
+public class RedisBase : IRedisBase, IDisposable
 {
     #region [ Ctor ]
 
@@ -84,6 +84,9 @@ public class RedisBase : IDisposable
             socket.ReceiveBufferSize = m_setting.ReceiveBufferSize;
 
             Connect();
+
+            if (_connected && setting.Db > 0)
+                SelectDb(setting.Db);
         }
     }
 
@@ -156,9 +159,9 @@ public class RedisBase : IDisposable
         return false;
     }
 
-    internal bool PUBLISH(string channel, long value)
+    public bool PUBLISH(string channel, long value)
         => PUBLISH(channel, value.ToString());
-    internal bool PUBLISH(string channel, byte[] vals)
+    public bool PUBLISH(string channel, byte[] vals)
     {
         if (!this._connected) return false;
         if (string.IsNullOrEmpty(channel)) return false;
@@ -191,7 +194,7 @@ public class RedisBase : IDisposable
         return false;
     }
 
-    internal bool PUBLISH(string channel, string value)
+    public bool PUBLISH(string channel, string value)
         => PUBLISH(channel, Encoding.UTF8.GetBytes(value));
 
     #endregion
@@ -313,6 +316,27 @@ public class RedisBase : IDisposable
             return Encoding.ASCII.GetBytes(s);
 
         throw new ResponseException("Unexpected reply: " + s);
+    }
+
+    #endregion
+
+    #region [ EXIST ]
+
+    public bool HEXISTS(string key, string field) {
+        if (_connected)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("*3\r\n");
+            sb.Append("$7\r\nHEXISTS\r\n");
+            sb.AppendFormat("${0}\r\n{1}\r\n", key.Length, key);
+            sb.AppendFormat("${0}\r\n{1}\r\n", field.Length, field);
+            byte[] buf = Encoding.UTF8.GetBytes(sb.ToString());
+
+            bool ok = SendBuffer(buf);
+            var str = ReadLine();
+            return ok && str.StartsWith(":1");
+        }
+        return false;
     }
 
     #endregion
@@ -564,8 +588,13 @@ public class RedisBase : IDisposable
     public bool ReplyRequest(string requestId, string cmd, int ok, string tag, string input, string output)
         => PUBLISH("*", _replyRequest(requestId, cmd, tag, ok, 0, 0, string.Empty, string.Empty, input, output));
 
-    string _replyRequest(string requestId, string cmd, string tag, int ok = 1, long docId = 0, int page = 0, string file = "", string err = "",string input = "", string output = "")
-        => string.Format("{0}^{1}^{2}^{3}^{4}^{5}^{6}^{7}^{8}^{9}", requestId, cmd, tag, ok, docId, page, file, err);
+    public bool ReplyRequest(string requestId, string cmd, int ok, string tag, string input)
+        => PUBLISH("*", _replyRequest(requestId, cmd, tag, ok, 0, 0, string.Empty, string.Empty, input, string.Empty));
+
+    string _replyRequest(string requestId, string cmd, string tag,
+        int ok = 1, long docId = 0, int page = 0, string file = "",
+        string err = "", string input = "", string output = "")
+        => string.Format("{0}^{1}^{2}^{3}^{4}^{5}^{6}^{7}^{8}^{9}", requestId, cmd, tag, ok, docId, page, file, err, input, output);
 
     #endregion
 
