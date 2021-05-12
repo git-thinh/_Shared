@@ -17,7 +17,6 @@ public enum MMF_TYPE
 public class oMMF
 {
     public long id { set; get; }
-    public string file { set; get; }
     public bool compress { set; get; }
     public MMF_TYPE type { set; get; }
     public Dictionary<string, string> infos { set; get; }
