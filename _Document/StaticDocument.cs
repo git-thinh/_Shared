@@ -5,9 +5,10 @@ public enum COMMANDS
     NONE = 0,
     DOC_INFO = 10,
 
-    PDF_SPLIT_ALL_PDF = 11,
-    PDF_SPLIT_ALL_PNG = 12,
-    PDF_SPLIT_ALL_JPG = 13,
+    PDF_MMF_TT = 11,
+    PDF_SPLIT_ALL_PDF = 21,
+    PDF_SPLIT_ALL_PNG = 22,
+    PDF_SPLIT_ALL_JPG = 23,
 
     TRANSLATE_TEXT_GOOGLE_01 = 70,
 
@@ -25,7 +26,9 @@ public enum COMMANDS
 
 public enum DOC_TYPE
 {
-    INFO_OGRINAL = 10,
+    TT_FILE = 10,
+
+    INFO_OGRINAL = 11,
     INFO_PROTOBUF = 19,
 
     PDF_OGRINAL = 30,

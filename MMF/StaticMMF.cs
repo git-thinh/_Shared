@@ -1,6 +1,28 @@
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.MMF;
+
+public enum MMF_TYPE
+{
+    NONE = 0,
+    TEXT = 1,
+    HTML = 2,
+    JSON = 3,
+    XML = 4,
+    PNG = 5,
+    JPG = 6
+}
+
+public class oMMF
+{
+    public long id { set; get; }
+    public string file { set; get; }
+    public bool compress { set; get; }
+    public MMF_TYPE type { set; get; }
+    public Dictionary<string, string> infos { set; get; }
+    public List<int> sizes { set; get; }
+}
 
 public static class StaticMMF
 {
@@ -30,7 +52,7 @@ public static class StaticMMF
     public static Bitmap GetBitmap(string name, int size)
     {
         byte[] buf = GetBuffer(name, size);
-        if (buf.Length >0)
+        if (buf.Length > 0)
         {
             using (var ms = new MemoryStream(buf))
                 return new Bitmap(ms);

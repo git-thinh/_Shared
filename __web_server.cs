@@ -41,7 +41,7 @@ namespace System.Web
                     #region 
 
                     string _type = "text/plain; charset=utf-8";
-                    string command = Request.QueryString["command"];
+                    string command = Request.QueryString["cmd"];
                     string input = Request.QueryString["input"];
 
                     switch (url)
