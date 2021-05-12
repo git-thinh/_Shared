@@ -55,7 +55,7 @@ public class oTesseractRequest
         data_path = @"tessdata";
     }
 
-    [Newtonsoft.Json.JsonIgnore]
+    //[Newtonsoft.Json.JsonIgnore]
     public string requestId {
         get {
             return string.Format("{0}_{1}|{2}_{3}|{4}", redis_key, redis_field, (int)command, (int)mode, time_created);
