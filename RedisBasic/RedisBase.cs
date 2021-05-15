@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -9,47 +10,9 @@ public class RedisBase : IRedisBase, IDisposable
 {
     #region [ Ctor ]
 
-    const string MESSAGE_SPLIT_END = "}>\r\n$";
-    const string MESSAGE_SPLIT_BEGIN = "\r\n<{";
-    const int BUFFER_HEADER_MAX_SIZE = 1000;
-    public Tuple<string, byte[]> __getBodyPublish(byte[] buf, string channel = null)
-    {
-        if (buf == null || buf.Length == 0) return null;
-
-        var val = new Tuple<string, byte[]>(string.Empty, null);
-
-        int len = 0;
-        int pos = 0;
-
-        len = buf.Length;
-        if (buf.Length > BUFFER_HEADER_MAX_SIZE) len = BUFFER_HEADER_MAX_SIZE;
-
-        string s = Encoding.ASCII.GetString(buf, 0, len);
-        var a = s.Split(new string[] { MESSAGE_SPLIT_END }, StringSplitOptions.None);
-        if (a.Length > 2)
-        {
-
-            for (int i = 0; i < a.Length - 1; i++) pos += a[i].Length + MESSAGE_SPLIT_END.Length;
-            pos += a[a.Length - 1].Split('\r')[0].Length + 2;
-
-            if (pos <= buf.Length - 2)
-            {
-                len = buf.Length - pos - 2;
-                byte[] bs = new byte[len];
-                for (int i = pos; i < buf.Length - 2; i++) bs[i - pos] = buf[i];
-
-                a = a[a.Length - 2].Split(new string[] { MESSAGE_SPLIT_BEGIN }, StringSplitOptions.None);
-                string _channel = a[a.Length - 1].Trim();
-
-                if (string.IsNullOrEmpty(channel)
-                    || _channel == "*"
-                    || (!string.IsNullOrEmpty(channel) && channel == _channel))
-                    val = new Tuple<string, byte[]>(_channel, bs);
-            }
-        }
-        return val;
-    }
-
+    //public const string MESSAGE_SPLIT_END = "}>\r\n$";
+    //public const string MESSAGE_SPLIT_BEGIN = "\r\n<{";
+    //public const int BUFFER_HEADER_MAX_SIZE = 1000;
 
     public readonly string __MONITOR_CHANNEL = "<{__MONITOR__}>";
 
@@ -322,7 +285,8 @@ public class RedisBase : IRedisBase, IDisposable
 
     #region [ EXIST ]
 
-    public bool HEXISTS(string key, string field) {
+    public bool HEXISTS(string key, string field)
+    {
         if (_connected)
         {
             StringBuilder sb = new StringBuilder();
@@ -562,12 +526,14 @@ public class RedisBase : IRedisBase, IDisposable
     #region [ SEND TO COMMAND ]
 
     public string SendToCommand(string channel, COMMANDS cmd, string data)
+        => SendToCommand(channel, cmd, Encoding.UTF8.GetBytes(data));
+    public string SendToCommand(string channel, COMMANDS cmd, byte[] data)
     {
         string sendId = Guid.NewGuid().ToString();
         var ls = new List<byte>();
         ls.AddRange(Encoding.ASCII.GetBytes(sendId));
         ls.Add((byte)cmd);
-        ls.AddRange(Encoding.UTF8.GetBytes(data));
+        ls.AddRange(data);
         bool ok = PUBLISH(channel, ls.ToArray());
         return sendId;
     }
@@ -577,24 +543,47 @@ public class RedisBase : IRedisBase, IDisposable
     #region [ REPLY DOCUMENT STATUS ]
 
     public bool ReplyRequest(string requestId, string cmd, int ok = 1, long docId = 0, int page = 0, string tag = "", string file = "", string err = "")
-        => PUBLISH("*", _replyRequest(requestId, cmd, tag, ok, docId, page, file, err));
+        => _replyRequest(requestId, cmd, tag, ok, docId, page, file, err);
     public bool ReplyRequest(string requestId, string cmd, int ok, long docId, string tag, string err)
-        => PUBLISH("*", _replyRequest(requestId, cmd, tag, ok, docId, 0, string.Empty, err));
+        => _replyRequest(requestId, cmd, tag, ok, docId, 0, string.Empty, err);
     public bool ReplyRequest(string requestId, string cmd, int ok, long docId, string tag)
-        => PUBLISH("*", _replyRequest(requestId, cmd, tag, ok, docId, 0, string.Empty, string.Empty));
+        => _replyRequest(requestId, cmd, tag, ok, docId, 0, string.Empty, string.Empty);
     public bool ReplyRequest(string requestId, string cmd, int ok, long docId)
-        => PUBLISH("*", _replyRequest(requestId, cmd, string.Empty, ok, docId, 0, string.Empty, string.Empty));
+        => _replyRequest(requestId, cmd, string.Empty, ok, docId, 0, string.Empty, string.Empty);
 
     public bool ReplyRequest(string requestId, string cmd, int ok, string tag, string input, string output)
-        => PUBLISH("*", _replyRequest(requestId, cmd, tag, ok, 0, 0, string.Empty, string.Empty, input, output));
+        => _replyRequest(requestId, cmd, tag, ok, 0, 0, string.Empty, string.Empty, input, output);
 
     public bool ReplyRequest(string requestId, string cmd, int ok, string tag, string input)
-        => PUBLISH("*", _replyRequest(requestId, cmd, tag, ok, 0, 0, string.Empty, string.Empty, input, string.Empty));
-
-    string _replyRequest(string requestId, string cmd, string tag,
+        => _replyRequest(requestId, cmd, tag, ok, 0, 0, string.Empty, string.Empty, input, string.Empty);
+    
+    bool _replyRequest(string requestId, string cmd, string tag,
         int ok = 1, long docId = 0, int page = 0, string file = "",
         string err = "", string input = "", string output = "")
-        => string.Format("{0}^{1}^{2}^{3}^{4}^{5}^{6}^{7}^{8}^{9}", requestId, cmd, tag, ok, docId, page, file, err, input, output);
+    {
+        try
+        {
+            var o = new oRequestReply()
+            {
+                command = cmd,
+                doc_id = docId,
+                error = err,
+                file = file,
+                input = input,
+                ok = ok == 1,
+                output = output,
+                page = page,
+                request_id = requestId,
+                tag = tag
+            };
+            var buf = o.ToBytes();
+            return PUBLISH("*", buf);
+        }
+        catch (Exception e)
+        {
+        }
+        return true;
+    }
 
     #endregion
 
