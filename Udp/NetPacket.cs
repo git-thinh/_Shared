@@ -10,12 +10,14 @@ public class NetPacket
 
     public NetPacket() => Buffer = new List<byte>();
     public NetPacket(byte[] data) => Buffer = new List<byte>(data);
-    public NetPacket(COMMANDS cmd, string requestId, string input, Dictionary<string, object> data)
+    public NetPacket(COMMANDS cmd, string requestId, string input, 
+        string message, Dictionary<string, object> data)
     {
         Buffer = new List<byte>();
         SetCommand(cmd);
         SetRequestId(requestId);
         Write(input);
+        Write(message);
         Write(data);
     }
 

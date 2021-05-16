@@ -16,6 +16,11 @@ public enum COMMANDS
     PDF_SPLIT_ALL_PNG = 22,
     PDF_SPLIT_ALL_JPG = 23,
 
+    OCR_TEXT_PAGE = 50,
+    OCR_TEXT_ALL_PAGE = 51,
+    OCR_BOX_PAGE = 62,
+    OCR_BOX_ALL_PAGE = 61,
+
     TRANSLATE_TEXT_GOOGLE_01 = 70,
 
     CURL_GET_HEADER = 80,
@@ -156,4 +161,29 @@ public static class DictionaryExt
         }
         return def;
     }
+}
+
+/*--------------------------------------*/
+
+public enum EngineMode : int
+{
+    /// <summary>
+    /// Only the legacy tesseract OCR engine is used.
+    /// </summary>
+    TesseractOnly = 0,
+
+    /// <summary>
+    /// Only the new LSTM-based OCR engine is used.
+    /// </summary>
+    LstmOnly,
+
+    /// <summary>
+    /// Both the legacy and new LSTM based OCR engine is used.
+    /// </summary>
+    TesseractAndLstm,
+
+    /// <summary>
+    /// The default OCR engine is used (currently LSTM-ased OCR engine).
+    /// </summary>
+    Default
 }
