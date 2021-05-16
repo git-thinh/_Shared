@@ -26,8 +26,12 @@ public class NetServer
     {
         while (!StopListening)
         {
-            var data = ServerUDP.Receive(ref Endpoint);
-            OnRecieve(Endpoint, new NetPacket(data));
+            try
+            {
+                var data = ServerUDP.Receive(ref Endpoint);
+                OnRecieve(Endpoint, new NetPacket(data));
+            }
+            catch { }
         }
     }
 

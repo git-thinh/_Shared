@@ -1,7 +1,7 @@
 ﻿public class __CONFIG
 {
     public const string UDP_HOST = "127.0.0.1";
-    public const int UDP_PORT = 12300;
+    public const int UDP_PORT = 12311;
 
     public const int REDIS_DB = 15;
     public const string REDIS_HOST = "127.0.0.1";

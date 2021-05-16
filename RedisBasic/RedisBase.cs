@@ -540,53 +540,6 @@ public class RedisBase : IRedisBase, IDisposable
 
     #endregion
 
-    #region [ REPLY DOCUMENT STATUS ]
-
-    public bool ReplyRequest(string requestId, string cmd, int ok = 1, long docId = 0, int page = 0, string tag = "", string file = "", string err = "")
-        => _replyRequest(requestId, cmd, tag, ok, docId, page, file, err);
-    public bool ReplyRequest(string requestId, string cmd, int ok, long docId, string tag, string err)
-        => _replyRequest(requestId, cmd, tag, ok, docId, 0, string.Empty, err);
-    public bool ReplyRequest(string requestId, string cmd, int ok, long docId, string tag)
-        => _replyRequest(requestId, cmd, tag, ok, docId, 0, string.Empty, string.Empty);
-    public bool ReplyRequest(string requestId, string cmd, int ok, long docId)
-        => _replyRequest(requestId, cmd, string.Empty, ok, docId, 0, string.Empty, string.Empty);
-
-    public bool ReplyRequest(string requestId, string cmd, int ok, string tag, string input, string output)
-        => _replyRequest(requestId, cmd, tag, ok, 0, 0, string.Empty, string.Empty, input, output);
-
-    public bool ReplyRequest(string requestId, string cmd, int ok, string tag, string input)
-        => _replyRequest(requestId, cmd, tag, ok, 0, 0, string.Empty, string.Empty, input, string.Empty);
-    
-    bool _replyRequest(string requestId, string cmd, string tag,
-        int ok = 1, long docId = 0, int page = 0, string file = "",
-        string err = "", string input = "", string output = "")
-    {
-        try
-        {
-            var o = new oRequestReply()
-            {
-                command = cmd,
-                doc_id = docId,
-                error = err,
-                file = file,
-                input = input,
-                ok = ok == 1,
-                output = output,
-                page = page,
-                request_id = requestId,
-                tag = tag
-            };
-            var buf = o.ToBytes();
-            return PUBLISH("*", buf);
-        }
-        catch (Exception e)
-        {
-        }
-        return true;
-    }
-
-    #endregion
-
     public void Dispose()
     {
         GC.SuppressFinalize(this);

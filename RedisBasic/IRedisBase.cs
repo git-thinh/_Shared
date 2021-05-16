@@ -63,16 +63,5 @@ public interface IRedisBase
     string SendToCommand(string channel, COMMANDS cmd, string data);
 
     #endregion
-
-    #region [ REPLY DOCUMENT STATUS ]
-
-    bool ReplyRequest(string requestId, string cmd, int ok = 1, long docId = 0, int page = 0, string tag = "", string file = "", string err = "");
-    bool ReplyRequest(string requestId, string cmd, int ok, long docId, string tag, string err);
-    bool ReplyRequest(string requestId, string cmd, int ok, long docId, string tag);
-    bool ReplyRequest(string requestId, string cmd, int ok, long docId);
-
-    bool ReplyRequest(string requestId, string cmd, int ok, string tag, string input);
-    bool ReplyRequest(string requestId, string cmd, int ok, string tag, string input, string output);
-
-    #endregion
+        
 }
