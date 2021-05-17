@@ -30,9 +30,15 @@ public class NetClient: IDisposable
     {
         while (!StopListening)
         {
-            IPEndPoint endpoint = new IPEndPoint(Address, Port);
-            var data = ClientUDP.Receive(ref endpoint);
-            OnRecieve(new NetPacket(data));
+            try
+            {
+                IPEndPoint endpoint = new IPEndPoint(Address, Port);
+                var data = ClientUDP.Receive(ref endpoint);
+                OnRecieve(new NetPacket(data));
+            }
+            catch {
+                StopListening = true;
+            }
         }
     }
 

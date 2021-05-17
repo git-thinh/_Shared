@@ -1,0 +1,6 @@
+D:\tt\core\_Shared\TabStrip\bin\Debug\TabStrip.dll
+D:\tt\core\_Shared\TabStrip\bin\Debug\TabStrip.pdb
+D:\tt\core\_Shared\TabStrip\obj\Debug\TabStrip.csprojAssemblyReference.cache
+D:\tt\core\_Shared\TabStrip\obj\Debug\TabStrip.csproj.CoreCompileInputs.cache
+D:\tt\core\_Shared\TabStrip\obj\Debug\TabStrip.dll
+D:\tt\core\_Shared\TabStrip\obj\Debug\TabStrip.pdb
