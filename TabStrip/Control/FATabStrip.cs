@@ -24,7 +24,7 @@ namespace FarsiLibrary.Win
 
         #region Constants
 
-        private const int DEF_HEADER_HEIGHT = 19;
+        private const int DEF_HEADER_HEIGHT = 21;
         private const int DEF_GLYPH_WIDTH = 40;
 
         private int DEF_START_POS = 10;
@@ -602,10 +602,12 @@ namespace FarsiLibrary.Win
 
                 if (currentItem == SelectedItem)
                 {
-                    brush = new LinearGradientBrush(buttonRect, ___COLOR.BACKGROUND_TAB_ACTIVE,
-                        ___COLOR.BACKGROUND_TAB_ACTIVE, LinearGradientMode.Vertical);
+                    brush = new LinearGradientBrush(
+                        buttonRect
+                        , ___COLOR.BACKGROUND_TAB_ACTIVE
+                        , ___COLOR.BACKGROUND_TAB_ACTIVE, LinearGradientMode.Vertical);
                     g.FillPath(brush, path);
-                    g.DrawPath(new Pen(brush, 1), path);
+                    g.DrawPath(new Pen(brush, 3), path);
                 }
                 //else
                 //{
@@ -625,29 +627,21 @@ namespace FarsiLibrary.Win
                 //}
                  
                  
-                var font = new Font(SystemFonts.DefaultFont.FontFamily, SystemFonts.DefaultFont.Size - 1);
-                if (currentItem == SelectedItem)
-                {
                     PointF textLoc = new PointF(buttonRect.Left + buttonRect.Height - 9,
                         buttonRect.Top + (buttonRect.Height / 2) - (textSize.Height / 2) + 1);
                     RectangleF textRect = buttonRect;
                     textRect.Location = textLoc;
                     textRect.Width = buttonRect.Width - (textRect.Left - buttonRect.Left) - 4;
                     textRect.Height = textSize.Height + currentFont.Size / 2;
+                if (currentItem == SelectedItem)
+                {
                     //textRect.Y -= 2;
                     g.DrawString(currentItem.Title, SystemFonts.DefaultFont, 
                         new SolidBrush(___COLOR.TEXT_COLOR_ACTIVE), textRect, sf);
                 }
                 else
                 {
-                    PointF textLoc = new PointF(buttonRect.Left + buttonRect.Height - 9,
-                        buttonRect.Top + (buttonRect.Height / 2) - (textSize.Height / 2) + 2);
-                    RectangleF textRect = buttonRect;
-                    textRect.Location = textLoc;
-                    textRect.Width = buttonRect.Width - (textRect.Left - buttonRect.Left) - 4;
-                    textRect.Height = textSize.Height + currentFont.Size / 2;
-
-                    g.DrawString(currentItem.Title, font, 
+                    g.DrawString(currentItem.Title, SystemFonts.DefaultFont, 
                         new SolidBrush(___COLOR.TEXT_COLOR_INACTIVE), textRect, sf);
                 }
             }
@@ -745,7 +739,7 @@ namespace FarsiLibrary.Win
                 menuGlyph.Bounds = new Rectangle(20 + 4, 2, 16, 16); //this.ClientSize.Width - 20, 2, 16, 16);
             }
 
-            DockPadding.Top = DEF_HEADER_HEIGHT + 1;
+            DockPadding.Top = DEF_HEADER_HEIGHT + 0;
             DockPadding.Bottom = 1;
             DockPadding.Right = 1;
             DockPadding.Left = 1;
