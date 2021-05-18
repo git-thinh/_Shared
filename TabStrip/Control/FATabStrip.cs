@@ -38,6 +38,7 @@ namespace FarsiLibrary.Win
         public event HandledEventHandler MenuItemsLoading;
         public event EventHandler MenuItemsLoaded;
         public event EventHandler TabStripItemClosed;
+        public event EventHandler WindowClosed;
 
         #endregion
 
@@ -417,7 +418,9 @@ namespace FarsiLibrary.Win
             }
             else if (result == HitTestResult.CloseButton)
             {
-                if (SelectedItem != null)
+                if (WindowClosed != null)
+                    WindowClosed(null, null);
+                else if (SelectedItem != null)
                 {
                     TabStripItemClosingEventArgs args = new TabStripItemClosingEventArgs(SelectedItem);
                     OnTabStripItemClosing(args);
