@@ -1,0 +1,10 @@
+D:\Git\sshnet\sourceCode\Renci.SshClient\Renci.SshNet.NET35\obj\Debug\Renci.SshNet.NET35.csproj.CoreCompileInputs.cache
+D:\Git\sshnet\sourceCode\Renci.SshClient\Renci.SshNet.NET35\bin\Debug\Renci.SshNet.dll
+D:\Git\sshnet\sourceCode\Renci.SshClient\Renci.SshNet.NET35\bin\Debug\Renci.SshNet.pdb
+D:\Git\sshnet\sourceCode\Renci.SshClient\Renci.SshNet.NET35\obj\Debug\Renci.SshNet.dll
+D:\Git\sshnet\sourceCode\Renci.SshClient\Renci.SshNet.NET35\obj\Debug\Renci.SshNet.pdb
+D:\tt\core\_Shared\Renci.SshClient\Renci.SshNet.NET35\obj\Debug\Renci.SshNet.NET35.csproj.CoreCompileInputs.cache
+D:\tt\core\_Shared\Renci.SshClient\Renci.SshNet.NET35\obj\Debug\Renci.SshNet.dll
+D:\tt\core\_Shared\Renci.SshClient\Renci.SshNet.NET35\obj\Debug\Renci.SshNet.pdb
+D:\tt\core\_Shared\Renci.SshClient\Renci.SshNet.NET35\bin\Debug\Renci.SshNet.dll
+D:\tt\core\_Shared\Renci.SshClient\Renci.SshNet.NET35\bin\Debug\Renci.SshNet.pdb

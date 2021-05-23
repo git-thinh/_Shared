@@ -1,0 +1,6 @@
+D:\Git\sshnet\sourceCode\Renci.SshClient\Renci.SshNet\bin\Debug\Renci.SshNet.xml
+D:\Git\sshnet\sourceCode\Renci.SshClient\Renci.SshNet\bin\Debug\Renci.SshNet.dll
+D:\Git\sshnet\sourceCode\Renci.SshClient\Renci.SshNet\bin\Debug\Renci.SshNet.pdb
+D:\Git\sshnet\sourceCode\Renci.SshClient\Renci.SshNet\obj\Debug\Renci.SshNet.csproj.CoreCompileInputs.cache
+D:\Git\sshnet\sourceCode\Renci.SshClient\Renci.SshNet\obj\Debug\Renci.SshNet.dll
+D:\Git\sshnet\sourceCode\Renci.SshClient\Renci.SshNet\obj\Debug\Renci.SshNet.pdb
